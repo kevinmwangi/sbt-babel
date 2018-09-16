@@ -1,11 +1,11 @@
 /*global process, require */
 
 var fs = require('fs'),
-jst = require('jstranspiler'),
-nodefn = require('when/node'),
-mkdirp = require('mkdirp'),
-path = require('path'),
-babel = require('babel-core');
+    jst = require('jstranspiler'),
+    nodefn = require('when/node'),
+    mkdirp = require('mkdirp'),
+    path = require('path'),
+    babel = require('@babel/core');
 
 var promised = {
     mkdirp: nodefn.lift(mkdirp),
@@ -16,7 +16,7 @@ var promised = {
 var args = jst.args(process.argv);
 
 function processor(input, output) {
-    return promised.readFile(input, 'utf8').then(function(contents) {
+    return promised.readFile(input, 'utf8').then(function (contents) {
         var result;
 
         var options = args.options;
@@ -30,11 +30,11 @@ function processor(input, output) {
             throw parseError(input, contents, err);
         }
         return result;
-    }).then(function(result) {
+    }).then(function (result) {
         return promised.mkdirp(path.dirname(output)).yield(result);
-    }).then(function(result) {
+    }).then(function (result) {
         return promised.writeFile(output, result.code, 'utf8').yield(result);
-    }).then(function(result) {
+    }).then(function (result) {
         return {
             source: input,
             result: {
@@ -42,7 +42,7 @@ function processor(input, output) {
                 filesWritten: [output]
             }
         };
-    }).catch(function(e) {
+    }).catch(function (e) {
         if (jst.isProblem(e)) return e; else throw e;
     });
 }
